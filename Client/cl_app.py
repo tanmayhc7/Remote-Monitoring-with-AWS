@@ -29,9 +29,9 @@ cntr=0; #no. of measurements for computing statistics
 
 ui=Ui_MainWindow() #initialize app window
 
-sqs = boto3.resource('sqs',aws_access_key_id='AKIAZVHKMN3HJCBYL27Y',aws_secret_access_key='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',region_name='us-west-2') #initialize sqs resource
-queue = sqs.get_queue_by_name(QueueName='sqs.fifo',QueueOwnerAWSAccountId='664063995598') #intantiate queue to recieve messages
-acchttp='https://sqs.us-west-2.amazonaws.com/664063995598/sqs.fifo'
+sqs = boto3.resource('sqs',aws_access_key_id=ACCESS_KEY_ID,aws_secret_access_key=SECRET_ACCESS_KEY,region_name=REGION_NAME) #initialize sqs resource
+queue = sqs.get_queue_by_name(QueueName=YOUR_Q_NAME,QueueOwnerAWSAccountId=YOUR_ACCOUNT_ID) #intantiate queue to recieve messages
+acchttp=YOUR_Q_URL
 
 class Login(QtWidgets.QWidget):
     
@@ -108,7 +108,7 @@ def fetch_and_plot():
     
     #Loop to receive 20 messgaes and append data to the lists for plotting
     for i in range(2):
-        response = queue.receive_messages(QueueUrl='https://sqs.us-west-2.amazonaws.com/664063995598/sqs.fifo',MaxNumberOfMessages=10)
+        response = queue.receive_messages(QueueUrl=acchttp,MaxNumberOfMessages=10)
         #response = sqs.Queue(url=acchttp).receive_messages()
         #print(response)
         for msg in response:
@@ -151,7 +151,7 @@ def fetch_and_plot():
     ui.label_low_rh_timestamp.setText(m['ts_rh_low'])
     ui.label_high_rh_timestamp.setText(m['ts_rh_high'])
     ui.label_timestamp.setText(m['timestamp'])
-    '''
+    
     #For plotting temperature and humidity time series
     fig = mpp.figure()
     fig.suptitle('Temperature and Humidity Values fetched = ' + str(count))
@@ -177,7 +177,7 @@ def fetch_and_plot():
     mpp.xlabel('Time [mm:ss]')
     mpp.ylabel('Humidity [%]')    
     mpp.show()
-    '''
+    
 def display_data():
     
     """function to update temperature, humidity depending on radio button selected"""
@@ -194,4 +194,3 @@ def display_data():
 
 if __name__ == '__main__':
     main() #call to main function
-    
